@@ -558,8 +558,6 @@ set(COMMON_SRC_FILES
 	../Source/StructCollectionStateFile.h
 	../Source/StructFile.cpp
 	../Source/StructFile.h
-	../Source/Utils.cpp
-	../Source/Utils.h
 	../Source/VirtualPad.cpp
 	../Source/VirtualPad.h
 )
