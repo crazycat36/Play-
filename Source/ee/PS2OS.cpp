@@ -1516,8 +1516,8 @@ void CPS2OS::sc_AddIntcHandler()
 //11
 void CPS2OS::sc_RemoveIntcHandler()
 {
-	uint32 cause	= m_ee.m_State.nGPR[SC_PARAM0].nV[0];
-	uint32 id		= m_ee.m_State.nGPR[SC_PARAM1].nV[0];
+	uint32 cause = m_ee.m_State.nGPR[SC_PARAM0].nV[0];
+	uint32 id    = m_ee.m_State.nGPR[SC_PARAM1].nV[0];
 
 	auto handler = m_intcHandlers[id];
 	if(!handler)
@@ -1525,11 +1525,20 @@ void CPS2OS::sc_RemoveIntcHandler()
 		m_ee.m_State.nGPR[SC_RETURN].nD0 = static_cast<int32>(-1);
 		return;
 	}
+	assert(handler->cause == cause);
 
 	m_intcHandlerQueue.Unlink(id);
 	m_intcHandlers.Free(id);
 
-	m_ee.m_State.nGPR[SC_RETURN].nD0 = 0;
+	int32 handlerCount = 0;
+	for(const auto& handler : m_intcHandlers)
+	{
+		if(!handler) continue;
+		if(handler->cause != cause) continue;
+		handlerCount++;
+	}
+
+	m_ee.m_State.nGPR[SC_RETURN].nD0 = handlerCount;
 }
 
 //12
@@ -1572,8 +1581,8 @@ void CPS2OS::sc_AddDmacHandler()
 //13
 void CPS2OS::sc_RemoveDmacHandler()
 {
-	uint32 channel	= m_ee.m_State.nGPR[SC_PARAM0].nV[0];
-	uint32 id		= m_ee.m_State.nGPR[SC_PARAM1].nV[0];
+	uint32 channel = m_ee.m_State.nGPR[SC_PARAM0].nV[0];
+	uint32 id      = m_ee.m_State.nGPR[SC_PARAM1].nV[0];
 
 	auto handler = m_dmacHandlers[id];
 	if(!handler)
@@ -1581,11 +1590,20 @@ void CPS2OS::sc_RemoveDmacHandler()
 		m_ee.m_State.nGPR[SC_RETURN].nD0 = static_cast<int32>(-1);
 		return;
 	}
+	assert(handler->channel == channel);
 
 	m_dmacHandlerQueue.Unlink(id);
 	m_dmacHandlers.Free(id);
 
-	m_ee.m_State.nGPR[SC_RETURN].nD0 = 0;
+	int32 handlerCount = 0;
+	for(const auto& handler : m_dmacHandlers)
+	{
+		if(!handler) continue;
+		if(handler->channel != channel) continue;
+		handlerCount++;
+	}
+
+	m_ee.m_State.nGPR[SC_RETURN].nD0 = handlerCount;
 }
 
 //14
