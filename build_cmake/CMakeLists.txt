@@ -107,6 +107,14 @@ if (NOT TARGET Framework)
 endif()
 list(APPEND PROJECT_LIBS Framework)
 
+if(NOT TARGET Framework_Http)
+	add_subdirectory(
+		${CMAKE_CURRENT_SOURCE_DIR}/../../Framework/build_cmake/FrameworkHttp
+		${CMAKE_CURRENT_BINARY_DIR}/Framework_Http
+	)
+endif()
+list(APPEND PROJECT_LIBS Framework_Http)
+
 if (NOT TARGET Framework_OpenGl)
 	add_subdirectory(
 		${CMAKE_CURRENT_SOURCE_DIR}/../../Framework/build_cmake/FrameworkOpenGl
@@ -116,9 +124,12 @@ endif()
 list(APPEND PROJECT_LIBS Framework_OpenGl)
 
 if(TARGET_PLATFORM_UNIX)
-        find_package(LIBEVDEV REQUIRED)
+		find_package(LIBEVDEV REQUIRED)
 		include_directories(${LIBEVDEV_INCLUDE_DIR})
 		list(APPEND PROJECT_LIBS ${LIBEVDEV_LIBRARY})
+
+		find_package(OpenSSL REQUIRED)
+		list(APPEND PROJECT_LIBS ${OPENSSL_LIBRARIES})
 endif()
 
 if(TARGET_PLATFORM_MACOS OR TARGET_PLATFORM_IOS OR TARGET_PLATFORM_UNIX)
@@ -533,6 +544,10 @@ set(COMMON_SRC_FILES
 	../Source/PS2VM_Preferences.h
 	../Source/RegisterStateFile.cpp
 	../Source/RegisterStateFile.h
+	../Source/s3stream/S3ObjectStream.cpp
+	../Source/s3stream/S3ObjectStream.h
+	../Source/s3stream/AmazonS3Client.cpp
+	../Source/s3stream/AmazonS3Client.h
 	../Source/saves/Icon.cpp
 	../Source/saves/Icon.h
 	../Source/saves/MaxSaveImporter.cpp
